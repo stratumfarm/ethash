@@ -157,11 +157,13 @@ func (l *Light) Verify(block Block) bool {
 	// Recompute the hash using the cache.
 	ok, mixDigest, result := cache.compute(uint64(dagSize), block.HashNoNonce(), block.Nonce())
 	if !ok {
+		log.Printf("compute !ok")
 		return false
 	}
 
 	// avoid mixdigest malleability as it's not included in a block's "hashNononce"
 	if block.MixDigest() != mixDigest {
+		log.Printf("Mix Digest diff %x %x", block.MixDigest(), mixDigest)
 		return false
 	}
 
