@@ -133,7 +133,7 @@ func (l *Light) Verify(block Block) bool {
 	// to prevent DOS attacks.
 	blockNum := block.NumberU64()
 	if blockNum >= epochLength*2048 {
-		log.Debug(fmt.Sprintf("block number %d too high, limit is %d", epochLength*2048))
+		log.Error(fmt.Sprintf("block number %d too high, limit is %d", epochLength*2048))
 		return false
 	}
 
@@ -144,7 +144,7 @@ func (l *Light) Verify(block Block) bool {
 	   Ethereum protocol consensus rules here which are not in scope of Ethash
 	*/
 	if difficulty.Cmp(common.Big0) == 0 {
-		log.Debug("invalid block difficulty")
+		log.Error("invalid block difficulty < common.Big0 ")
 		return false
 	}
 
@@ -156,11 +156,13 @@ func (l *Light) Verify(block Block) bool {
 	// Recompute the hash using the cache.
 	ok, mixDigest, result := cache.compute(uint64(dagSize), block.HashNoNonce(), block.Nonce())
 	if !ok {
+		log.Error("cache compute")
 		return false
 	}
 
 	// avoid mixdigest malleability as it's not included in a block's "hashNononce"
 	if block.MixDigest() != mixDigest {
+		log.Error("Mix Digest diff %x %x", block.MixDigest(), mixDigest)
 		return false
 	}
 
