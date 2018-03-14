@@ -169,6 +169,7 @@ func (l *Light) Verify(block Block) bool {
 
 	// The actual check.
 	target := new(big.Int).Div(maxUint256, difficulty)
+	log.Printf("target %d, diff %d", target, difficulty)
 	return result.Big().Cmp(target) <= 0
 }
 
