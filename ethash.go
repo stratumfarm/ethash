@@ -133,7 +133,7 @@ func (l *Light) Verify(block Block) bool {
 	// to prevent DOS attacks.
 	blockNum := block.NumberU64()
 	if blockNum >= epochLength*2048 {
-		log.Debug(fmt.Sprintf("block number %d too high, limit is %d", epochLength*2048))
+		log.Debug(fmt.Sprintf("block number %d too high, limit is %d", blockNum, epochLength*2048))
 		return false
 	}
 
@@ -225,6 +225,13 @@ func (l *Light) GetShareDiff(blockNum uint64, headerHash common.Hash, nonce uint
 	var b [32]byte
 	copy(b[:], h.Bytes())
 	return share_diff(b), md
+}
+
+func (l *Light) GetShareDiffHash(blockNum uint64, headerHash common.Hash, nonce uint64) (diff common.Hash, mixDigest common.Hash) {
+	_, md, h := l.computeMixDigest(blockNum, headerHash, nonce)
+	var b [32]byte
+	copy(b[:], h.Bytes())
+	return b, md
 }
 
 // NICEHASH ShareDiff
