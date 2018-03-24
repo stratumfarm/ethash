@@ -233,6 +233,16 @@ func (l *Light) GetShareDiffHash(blockNum uint64, headerHash common.Hash, nonce 
 	copy(b[:], h.Bytes())
 	return b, md
 }
+func (l *Light) GetShareDiffHashReverted(blockNum uint64, headerHash common.Hash, nonce uint64) (diff common.Hash, mixDigest common.Hash) {
+	_, md, h := l.computeMixDigest(blockNum, headerHash, nonce)
+	var b [32]byte
+	copy(b[:], h.Bytes())
+	var hash_end [32]byte
+	for i := 0; i < 32; i++ {
+		hash_end[31-i] = b[i]
+	}
+	return hash_end, md
+}
 
 // NICEHASH ShareDiff
 
